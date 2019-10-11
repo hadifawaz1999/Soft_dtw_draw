@@ -48,7 +48,7 @@ def barrycenters(xtrain, ytrain, labels, num_in_each_label):
     barrycenters_all_array.shape = (labels.size, xtrain.shape[1])
     return barrycenters_all_array
 
-def draw(xtrain,ytrain,labels,barrycenters,path):
+def draw(xtrain,ytrain,labels,barrycenters):
     N=labels.size
     n=N//2
     m=N-n
@@ -73,7 +73,7 @@ def draw(xtrain,ytrain,labels,barrycenters,path):
         sub[1][i].plot(barrycenters[i+n],c="red")
         str=f"Class {labels[i+n]}"
         sub[1][i].set_xlabel(str)
-    plt.savefig(path+'/results.png')
+    plt.savefig(
 
 
 def load_data(file_name):
