@@ -8,17 +8,18 @@ from utils import barrycenters
 from utils import get_num_in_each_label
 from utils import draw
 import os
+import shutil
 
 np.random.seed(1)
 
-file_name="MiddlePhalanxTW"
+file_name="Coffee"
 xtrain,ytrain,xtest,ytest=load_data(file_name)
 path='/home/hadi/github_files/Soft_dtw_draw/results/'+file_name
 if not os.path.exists(path):
 	os.mkdir(path)
 else:
-	print("File already exists you can see results")
-	exit()
+	shutil.rmtree(path)
+	os.mkdir(path)
 labels=get_labels(ytrain)
 xtrain,xtest=normalisation(xtrain,xtest)
 num_in_each_label=get_num_in_each_label(ytrain,labels)
