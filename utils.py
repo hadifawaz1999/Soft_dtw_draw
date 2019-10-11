@@ -67,17 +67,17 @@ def draw(xtrain, ytrain, labels, barrycenters, path):
         for j in range(ytrain.size):
             if (ytrain[j] == labels[i]):
                 sub[0][i].plot(xtrain[j], c="blue")
-        sub[0][i].plot(barrycenters[i], c="red")
+        sub[0][i].plot(barrycenters[i], c="red",lw=5)
         str = f"Class {labels[i]}"
         sub[0][i].set_xlabel(str)
     for i in range(m):
         for j in range(ytrain.size):
             if (ytrain[j] == labels[i + n]):
                 sub[1][i].plot(xtrain[j], c="blue")
-        sub[1][i].plot(barrycenters[i + n], c="red")
+        sub[1][i].plot(barrycenters[i + n], c="red",lw=5)
         str = f"Class {labels[i + n]}"
         sub[1][i].set_xlabel(str)
-    f.savefig(path + '/results.png')
+    f.savefig(path)
 
 
 def load_data(file_name):
