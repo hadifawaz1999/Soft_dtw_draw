@@ -12,7 +12,7 @@ import shutil
 
 np.random.seed(1)
 
-files=['Adiac','ArrowHead','Beef','BeetleFly','BirdChicken','Car','CBF','ChlorineConcentration','CinCECGTorso','Coffee','Computers']
+files=['Lightning2','Lightning7','Meat','MedicalImages','MiddlePhalanxOutlineAgeGroup','MiddlePhalanxOutlineCorrect']
 
 for file_name in files:
 	print(file_name)
