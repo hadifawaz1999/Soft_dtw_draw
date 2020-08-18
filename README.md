@@ -17,3 +17,4 @@ Call this function to see the animated version of the results.
 
 # Tested On :
 
+https://www.cs.ucr.edu/%7Eeamonn/time_series_data_2018/
