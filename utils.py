@@ -6,6 +6,7 @@ from tslearn.barycenters import softdtw_barycenter
 import matplotlib.pyplot as plt
 import matplotlib.figure as mfig
 from tslearn.metrics import soft_dtw
+import matplotlib.animation as animation
 
 
 def get_labels(y):
@@ -53,6 +54,9 @@ def barrycenters(xtrain, ytrain, labels, num_in_each_label):
 
 
 def draw(xtrain, ytrain, labels, barrycenters, path):
+    x=np.arange(0,int(xtrain.shape[1]),step=1)
+    amin=np.amin(xtrain)
+    amax=np.amax(xtrain)
     N = labels.size
     n = N // 2
     m = N - n
@@ -64,6 +68,8 @@ def draw(xtrain, ytrain, labels, barrycenters, path):
             n, m = m, n
     f, sub = plt.subplots(nrows=2, ncols=n, squeeze=False, sharex=True, sharey=True,figsize=(15,15))
     for i in range(n):
+        sub[0][i].set_xlim(0,len(x))
+        sub[0][i].set_ylim(amin-0.5,amax+0.5)
         for j in range(ytrain.size):
             if (ytrain[j] == labels[i]):
                 sub[0][i].plot(xtrain[j], c="blue")
@@ -71,6 +77,8 @@ def draw(xtrain, ytrain, labels, barrycenters, path):
         str = f"Class {labels[i]}"
         sub[0][i].set_xlabel(str)
     for i in range(m):
+        sub[1][i].set_xlim(0,len(x))
+        sub[1][i].set_ylim(amin-0.5,amax+0.5)
         for j in range(ytrain.size):
             if (ytrain[j] == labels[i + n]):
                 sub[1][i].plot(xtrain[j], c="blue")
@@ -78,10 +86,77 @@ def draw(xtrain, ytrain, labels, barrycenters, path):
         str = f"Class {labels[i + n]}"
         sub[1][i].set_xlabel(str)
     f.savefig(path)
+    # plt.show()
 
+def draw_animation(xtrain, ytrain, labels, barrycenters):
+    intv=10
+    x=np.arange(0,int(xtrain.shape[1]),step=1)
+    amin=np.amin(xtrain)
+    amax=np.amax(xtrain)
+    N = labels.size
+    n = N // 2
+    m = N - n
+    if (N == 2):
+        n = N
+        m = 0
+    elif (N % 2 == 1):
+        if (n < m):
+            n, m = m, n
+    f, sub = plt.subplots(nrows=2, ncols=n, squeeze=False, sharex=True, sharey=True,figsize=(15,15))
+    anim=[]
+    for i in range(n):
+        xtrain_plot=[]
+        sub[0][i].set_xlim(0,len(x))
+        sub[0][i].set_ylim(amin-0.5,amax+0.5)
+        indices=[]
+        for j in range(ytrain.size):
+            if (ytrain[j] == labels[i]):
+                xtrain_plot.append(sub[0][i].plot([],[],color="blue"))
+                indices.append(j)
+        def temp1(i,xtrain_plot,indices,xtrain):
+            def animate1(u):
+                for itr in range(len(xtrain_plot)):
+                    xtrain_plot[itr][0].set_data(x[:u],xtrain[indices[itr],:u])
+            return animate1
+        anim.append(animation.FuncAnimation(f,temp1(i,xtrain_plot,indices,xtrain),frames=len(x),interval=intv))
+
+        bary_plot1, = sub[0][i].plot([],[],color="red",lw=5)
+        def temp_bary1(i,bary_plot1,barrycenters):
+            def animate_barry1(u):
+                bary_plot1.set_data(x[:u],barrycenters[i,:u])
+            return animate_barry1
+        anim.append(animation.FuncAnimation(f,temp_bary1(i,bary_plot1,barrycenters),frames=len(x),interval=intv))
+        str = f"Class {labels[i]}"
+        sub[0][i].set_xlabel(str)
+
+    for i in range(m):
+        xtrain_plot=[]
+        sub[1][i].set_xlim(0,len(x))
+        sub[1][i].set_ylim(amin-0.5,amax+0.5)
+        indices=[]
+        for j in range(ytrain.size):
+            if (ytrain[j] == labels[i + n]):
+                xtrain_plot.append(sub[1][i].plot([],[],color="blue"))
+                indices.append(j)
+        def temp2(i,xtrain_plot,indices,xtrain):
+            def animate2(u):
+                for itr in range(len(xtrain_plot)):
+                    xtrain_plot[itr][0].set_data(x[:u],xtrain[indices[itr],:u])
+            return animate2
+        anim.append(animation.FuncAnimation(f,temp2(i,xtrain_plot,indices,xtrain),frames=len(x),interval=intv))
+
+        bary_plot2, = sub[1][i].plot([],[],color="red",lw=5)
+        def temp_bary2(i,bary_plot2,barrycenters):
+            def animate_barry2(u):
+                bary_plot2.set_data(x[:u],barrycenters[i+n,:u])
+            return animate_barry2
+        anim.append(animation.FuncAnimation(f,temp_bary2(i,bary_plot2,barrycenters),frames=len(x),interval=intv))
+        str = f"Class {labels[i + n]}"
+        sub[1][i].set_xlabel(str)
+    plt.show()
 
 def load_data(file_name):
-    folder_path = "/home/hadi/data sets/UCRArchive_2018/"
+    folder_path = "/media/hadi/laban/data_sets/UCRArchive_2018/"
     folder_path += (file_name + "/")
     train_path = folder_path + file_name + "_TRAIN.tsv"
     test_path = folder_path + file_name + "_TEST.tsv"
